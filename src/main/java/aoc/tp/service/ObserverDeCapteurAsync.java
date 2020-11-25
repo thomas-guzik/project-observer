@@ -2,7 +2,7 @@ package aoc.tp.service;
 
 import java.util.concurrent.Future;
 
-import aoc.tp.servant.Capteur;
+import aoc.tp.capteur.Capteur;
 
 public interface ObserverDeCapteurAsync {
 

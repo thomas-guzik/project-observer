@@ -1,4 +1,4 @@
-package aoc.tp.strategy;
+package aoc.tp.algo;
 
 public interface AlgoDiffusion {
 	public void configure();

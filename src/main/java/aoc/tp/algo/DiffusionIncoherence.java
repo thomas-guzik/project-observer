@@ -1,5 +1,6 @@
-package aoc.tp.strategy;
-public class DiffusionAtomique implements AlgoDiffusion {
+package aoc.tp.algo;
+
+public class DiffusionIncoherence implements AlgoDiffusion {
 
 	public void configure() {
 		// TODO Auto-generated method stub

@@ -1,4 +1,4 @@
-package aoc.tp.servant;
+package aoc.tp.capteur;
 
 import aoc.tp.observer.Subject;
 

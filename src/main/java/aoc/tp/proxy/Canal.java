@@ -2,7 +2,7 @@ package aoc.tp.proxy;
 
 import aoc.tp.concreteclient.Afficheur;
 import aoc.tp.observer.Observer;
-import aoc.tp.servant.Capteur;
+import aoc.tp.capteur.Capteur;
 import aoc.tp.servant.ObserverdeCapteur;
 
 public class Canal implements Capteur, ObserverdeCapteur {
