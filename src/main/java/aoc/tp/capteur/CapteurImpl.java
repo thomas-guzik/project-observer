@@ -1,28 +1,18 @@
 package aoc.tp.capteur;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import aoc.tp.algo.AlgoDiffusion;
 import aoc.tp.observer.Observer;
+import aoc.tp.observer.AbstractSubject;
 
-public class CapteurImpl implements Capteur {
+public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	private int v;
-	private AlgoDiffusion algo;
-	private boolean lock;
 	
-	public CapteurImpl(AlgoDiffusion algo) {
-		this.algo = algo;
+	public CapteurImpl() {
 		v = 0;
-		lock = false;
-	}
-
-	public void attach(Observer o) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void detach(Observer o) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public int getValue() {
@@ -31,9 +21,7 @@ public class CapteurImpl implements Capteur {
 
 	public void tick() {
 		v++;
-		//algo .
-		algo.execute();
-
+		notifyObservers();
 	}
 
 }

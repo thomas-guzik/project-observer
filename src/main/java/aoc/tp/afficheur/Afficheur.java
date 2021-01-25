@@ -7,10 +7,8 @@ import aoc.tp.servant.ObserverdeCapteur;
 
 public class Afficheur implements ObserverdeCapteur {
 
-	private Canal canal;
-	
 	public void update(Capteur subject) {
-		Logger.getGlobal().info("Afficheur update()");
+		Logger.getGlobal().info(subject.getValue());
 	}
 
 }

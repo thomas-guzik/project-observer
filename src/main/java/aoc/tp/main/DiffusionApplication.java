@@ -21,7 +21,9 @@ public class DiffusionApplication {
         while(looping) {
             n++;
 
-            capteur.tick();
+            for (Canal c : BaseConfiguration.getCanals()) {
+                c.tick();
+            }
 
             try {
                 input = br.readLine();
