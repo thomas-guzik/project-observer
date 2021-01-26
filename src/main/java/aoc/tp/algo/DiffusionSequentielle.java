@@ -17,7 +17,7 @@ public class DiffusionSequentielle implements AlgoDiffusion {
 	}
 
 	@Override
-	public void valueRead(ObserverDeCapteur o) {
+	public void valueRead() {
 		// TODO Auto-generated method stub
 		
 	}

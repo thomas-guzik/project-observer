@@ -1,6 +1,6 @@
 package aoc.tp.observer;
 
-public interface Observer<T> {
+public interface Observer<T extends Subject> {
 
-	public void update(Subject subject);
+	public void update(T subject);
 }

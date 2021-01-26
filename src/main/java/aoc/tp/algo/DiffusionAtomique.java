@@ -29,7 +29,7 @@ public class DiffusionAtomique implements AlgoDiffusion {
 	}
 
 	@Override
-	public void valueRead(ObserverDeCapteur o) {
+	public void valueRead() {
 		if(nb_sended_update == 0) {
 			Logger.getLogger("Error").info("Error this case should be impossible");
 		}

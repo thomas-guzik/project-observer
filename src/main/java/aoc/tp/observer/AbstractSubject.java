@@ -5,18 +5,18 @@ import java.util.ArrayList;
 
 public abstract class AbstractSubject implements Subject {
 
-	private List<Observer<?>> observers = new ArrayList<>();
+	private List<Observer<Subject>> observers = new ArrayList<>();
     
-    public void attach(Observer<?> o) {
+    public void attach(Observer<Subject> o) {
 		observers.add(o);
 	}
 
-	public void detach(Observer<?> o) {
+	public void detach(Observer<Subject> o) {
 		observers.remove(o);
     }
     
     public void notifyObservers() {
-        for (Observer<?> observer : observers) {
+        for (Observer<Subject> observer : observers) {
 			observer.update(this);
 		}
     }

@@ -1,6 +1,6 @@
 package aoc.tp.canal;
 
-import aoc.tp.observer.Observer;
+import aoc.tp.observer.AbstractSubject;
 import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public class Canal 
+public class Canal extends AbstractSubject implements CapteurAsync
 // implements CapteurAsync, ObserverdeCapteur {
 {
 
@@ -22,25 +22,16 @@ public class Canal
 		this.afficheur = afficheur;
 		this.scheduler = Executors.newCachedThreadPool();
 	}
-//	
-//	public void update(Capteur subject) {
-//		scheduler.submit(() -> { afficheur.update(subject); });
-//	}
-//
-//	public Future<Integer> getValue() {
-//		return scheduler.submit(() -> { return capteur.getValue(); });
-//	}
-//
-//	public void tick() {
-//		scheduler.submit(() -> { capteur.tick(); });
-//	}
-//
-//	public void attach(Observer o) {
-//		capteur.attach(o);
-//	}
-//
-//	public void detach(Observer o) {
-//		capteur.detach(o);
-//	}
+	
+	public void update(Capteur subject) {
+		scheduler.submit(() -> { afficheur.update(subject); });
+	}
 
+	public Future<Integer> getValue() {
+		return scheduler.submit(() -> { return capteur.getValue(); });
+	}
+	
+	public void tick() {
+		scheduler.submit(() -> { capteur.tick(); });
+	}
 }

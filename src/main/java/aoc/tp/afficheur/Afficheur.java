@@ -10,11 +10,4 @@ public class Afficheur implements ObserverDeCapteur {
 	public void update(Capteur subject) {
 		Logger.getGlobal().info(String.valueOf(subject.getValue()));
 	}
-
-	@Override
-	public void update(Subject subject) {
-		Logger.getGlobal().info("Erreur");
-	}
-
-
 }

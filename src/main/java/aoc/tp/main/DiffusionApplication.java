@@ -5,9 +5,12 @@ import java.io.InputStreamReader;
 
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
+import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurImpl;
 import aoc.tp.configuration.BaseConfiguration;
+import aoc.tp.observer.Observer;
+import aoc.tp.observer.Subject;
 
 public class DiffusionApplication {
 
@@ -39,10 +42,17 @@ public class DiffusionApplication {
 //            }
 //        }
     	
+    	// Créer des threads
+    	
+    	
     	Capteur capteur = new CapteurImpl();
     	ObserverDeCapteur afficheur = new Afficheur();
+    	Canal c = new Canal(capteur, afficheur);
+    	
+    	capteur.attach((Observer) c);
     	
     	capteur.tick();
-    	
+    	capteur.tick();
+
     }
 }

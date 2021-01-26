@@ -104,6 +104,66 @@ pattern strategy est utilisé pour gérer les 3 pattern de diffusion
 
 le canal joue le role de proxy
 
+
+*2020-10-13*
+tick -> opération qui passe par le mutateur qui va incrémenter la valeur du capteur
+
+tick -> d'habitude il y a notify, mais on a décidé d'appliquer le pattern strategy, donc on fait execute ???
+
+Comme il y a eu une écrite, on utilise l'algo
+
+
+notifyobse]ver dans diffusion atomqiue
+
+le modele m2 de l'intéresse pas
+
+*2020-10-19*
+
+Passer du M1 à M2 :
+
+1. Définir l'interface asynchrone à partir de l'interface synchrone
+2.  Definir un proxy
+
+Dans un canal on met les délai
+
+Il ne faut pas mettre les diagrammes m2
+
+Actice object en mirroir l'un de l'autre
+Les opérations asyncrhones se font des deux cotés
+
+
+M3
+
+Conseil de mise en oeuvre
+
+Classe de configuration :
+- Créer le capteur instance de CapteurImpl
+- Créer 4 canaux
+- Créer 4 afficheurs, chaque afficheur écrit dans la console avec Logger... et enregistre dans une liste la valeur reçue
+- Connecter tout ça
+
+- Pas de besoin de Update et GetValue = utiliser les lambda
+
+- Employer suffisament de thread
+
+Ecriture de l'oracle :
+
+Après arret de l'execution (après 100 tick par exemple )
+Comparaison des traces enregistrées par chaque afficheur
+On ne retient que le plus court préfixe (si l'enregistreur A a 90 valeur enregistré et les autres en ont plus on s'arretre à 90)
+
+- atomique : toutes les traces sont égales à 1,2...L
+- séqentielle : toutes les traces sont croissantes et identiques
+- à époque ou cuasle : toutes les traces sont croissantes
+
+*2020-11-20*
+
+- on est pas obigé de mettre les detach et attach dans les ineterfaces asynchrone
+- créer une classe App
+- l'oracle compare les listes dans les enregistreurs (c'est à dire les listes)
+- ScheduledExecutorService -> dans App
+
+
 # Diagramme de conception
 
 # M1
