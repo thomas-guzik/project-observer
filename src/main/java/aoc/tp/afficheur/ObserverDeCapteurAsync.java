@@ -1,4 +1,4 @@
-package aoc.tp.service;
+package aoc.tp.afficheur;
 
 import java.util.concurrent.Future;
 

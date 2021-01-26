@@ -1,8 +1,8 @@
 package aoc.tp.configuration;
 
-import aoc.tp.concreteclient.Afficheur;
-import aoc.tp.proxy.Canal;
+import aoc.tp.afficheur.Afficheur;
 import aoc.tp.algo.DiffusionAtomique;
+import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurImpl;
 
@@ -18,7 +18,7 @@ public class BaseConfiguration implements Configuration {
 		}
 		for(int i = 0; i < canals.length; i++) {
 			canals[i] = new Canal(capteur, afficheurs[i]);
-			capteur.attach(canals[i]);
+//			capteur.attach(canals[i]);
 		}
 	}
 
