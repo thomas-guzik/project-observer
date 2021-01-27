@@ -2,7 +2,6 @@ package aoc.tp.algo;
 
 import java.util.logging.Logger;
 
-import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.capteur.Capteur;
 
 public class DiffusionAtomique implements AlgoDiffusion {

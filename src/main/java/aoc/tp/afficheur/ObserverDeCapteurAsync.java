@@ -1,10 +1,9 @@
 package aoc.tp.afficheur;
 
-import java.util.concurrent.Future;
-
 import aoc.tp.capteur.Capteur;
+import aoc.tp.observer.Observer;
 
-public interface ObserverDeCapteurAsync {
+public interface ObserverDeCapteurAsync extends Observer<Capteur> {
 
-	public Future update(Capteur s);
+	public void update(Capteur c);
 }

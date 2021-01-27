@@ -29,11 +29,11 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	public void tick() {
 		algo.execute();
+		// TODO Améliorer cette partie
 		while (!open) {
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -43,4 +43,7 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 		v_read = v_write;
 	}
 
+	public void setAlgorithm(AlgoDiffusion a) {
+		algo = a;
+	}
 }

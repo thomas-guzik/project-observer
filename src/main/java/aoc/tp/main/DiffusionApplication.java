@@ -1,58 +1,53 @@
 package aoc.tp.main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurImpl;
-import aoc.tp.configuration.BaseConfiguration;
 import aoc.tp.observer.Observer;
-import aoc.tp.observer.Subject;
 
 public class DiffusionApplication {
 
+	public void run(Capteur capteur, int ticks) {
+		if(ticks >= 0) {
+			int n_tick = 0;
+			while(n_tick < ticks) {
+				capteur.tick();
+				n_tick++;
+			}
+		} else {
+			while(true) {
+				capteur.tick();
+			}
+		}
+	}
+	
+	public Capteur initialize() {
+		Capteur capteur = new CapteurImpl();
+		
+		
+		
+    	ObserverDeCapteur afficheur1 = new Afficheur();
+    	ObserverDeCapteur afficheur2 = new Afficheur();
+    	ObserverDeCapteur afficheur3 = new Afficheur();
+    	ObserverDeCapteur afficheur4 = new Afficheur();
+    	
+    	Canal c1 = new Canal(capteur, afficheur1);
+    	Canal c2 = new Canal(capteur, afficheur2);
+    	Canal c3 = new Canal(capteur, afficheur3);
+    	Canal c4 = new Canal(capteur, afficheur4);
+    	
+    	capteur.attach((Observer) c1);
+    	capteur.attach((Observer) c2);
+    	capteur.attach((Observer) c3);
+    	capteur.attach((Observer) c4);
+
+    	return capteur;
+	}
 
     public static void main(String[] args) {
-//        System.out.println("Hello world");
-//        
-//        Capteur capteur = BaseConfiguration.getCapteur();
-//
-//        int n = 0;
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//        String input = "";
-//        boolean looping = true;
-//        while(looping) {
-//            n++;
-//
-//            for (Canal c : BaseConfiguration.getCanals()) {
-//                c.tick();
-//            }
-//
-//            try {
-//                input = br.readLine();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println("Tick: " + String.valueOf(n) + " Please press q to stop or Enter to continue");
-//            if(input.equals("q")) {
-//                looping = false;
-//            }
-//        }
-    	
-    	// Créer des threads
-    	
-    	
-    	Capteur capteur = new CapteurImpl();
-    	ObserverDeCapteur afficheur = new Afficheur();
-    	Canal c = new Canal(capteur, afficheur);
-    	
-    	capteur.attach((Observer) c);
-    	
-    	capteur.tick();
-    	capteur.tick();
-
+    	DiffusionApplication app = new DiffusionApplication();
+    	app.run(app.initialize(), 5);
     }
 }

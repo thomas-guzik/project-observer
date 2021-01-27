@@ -1,7 +1,5 @@
 package aoc.tp.algo;
 
-import aoc.tp.afficheur.ObserverDeCapteur;
-
 public class DiffusionIncoherence implements AlgoDiffusion {
 
 	@Override

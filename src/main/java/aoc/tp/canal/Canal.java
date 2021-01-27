@@ -2,6 +2,7 @@ package aoc.tp.canal;
 
 import aoc.tp.observer.AbstractSubject;
 import aoc.tp.afficheur.ObserverDeCapteur;
+import aoc.tp.afficheur.ObserverDeCapteurAsync;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
 
@@ -9,9 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-public class Canal extends AbstractSubject implements CapteurAsync
-// implements CapteurAsync, ObserverdeCapteur {
-{
+public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCapteurAsync {
 
 	private Capteur capteur;
 	private ObserverDeCapteur afficheur;
@@ -24,7 +23,7 @@ public class Canal extends AbstractSubject implements CapteurAsync
 	}
 	
 	public void update(Capteur subject) {
-		scheduler.submit(() -> { afficheur.update(subject); });
+		scheduler.submit(() -> { afficheur.update(this); });
 	}
 
 	public Future<Integer> getValue() {
@@ -34,4 +33,5 @@ public class Canal extends AbstractSubject implements CapteurAsync
 	public void tick() {
 		scheduler.submit(() -> { capteur.tick(); });
 	}
+
 }
