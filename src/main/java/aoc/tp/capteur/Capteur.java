@@ -7,4 +7,6 @@ public interface Capteur extends Subject {
 	public void tick();
 	public void lock();
 	public void unlock();
+	public void block();
+	public void unblock();
 }

@@ -1,15 +1,19 @@
 package aoc.tp.capteur;
 
+import java.util.logging.Logger;
+
 import aoc.tp.algo.AlgoDiffusion;
 import aoc.tp.algo.DiffusionAtomique;
+import aoc.tp.algo.DiffusionSequentielle;
 import aoc.tp.observer.AbstractSubject;
 
 public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	private int v_write = 0;
 	private int v_read = v_write;
-	private boolean open = true;
-	private AlgoDiffusion algo = new DiffusionAtomique(this);
+	private boolean locked = false;
+    private boolean blocked = false;
+	private AlgoDiffusion algo = new DiffusionSequentielle(this);
 
 	public CapteurImpl() {
 	}
@@ -20,27 +24,39 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	}
 
 	public void lock() {
-		open = false;
+		locked = true;
 	}
 
 	public void unlock() {
-		open = true;
+		locked = false;
 	}
+
+    public void block() {
+        Logger.getLogger("Error").info("blocked");
+        blocked = true;
+    }
+
+    public void unblock() {
+        Logger.getLogger("Error").info("unblocked");
+        blocked = false;
+    }
 
 	public void tick() {
 		algo.execute();
 		// TODO Améliorer cette partie
-		while (!open) {
+		while (locked) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		if (open) {
+		if (!locked) {
 			v_write++;
 		}
-		v_read = v_write;
+        if (!blocked) {
+            v_read = v_write;
+        }
 	}
 
 	public void setAlgorithm(AlgoDiffusion a) {
