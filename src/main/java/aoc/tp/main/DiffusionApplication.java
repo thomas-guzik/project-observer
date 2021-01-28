@@ -14,11 +14,21 @@ public class DiffusionApplication {
 			int n_tick = 0;
 			while(n_tick < ticks) {
 				capteur.tick();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				n_tick++;
 			}
 		} else {
 			while(true) {
 				capteur.tick();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -48,6 +58,6 @@ public class DiffusionApplication {
 
     public static void main(String[] args) {
     	DiffusionApplication app = new DiffusionApplication();
-    	app.run(app.initialize(), 50);
+    	app.run(app.initialize(), 5);
     }
 }

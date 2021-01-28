@@ -9,4 +9,6 @@ public interface Capteur extends Subject {
 	public void unlock();
 	public void block();
 	public void unblock();
+	public CapteurState getState();
+	public void setState(CapteurState state);
 }

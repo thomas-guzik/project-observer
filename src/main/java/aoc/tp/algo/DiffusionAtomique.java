@@ -3,26 +3,33 @@ package aoc.tp.algo;
 import java.util.logging.Logger;
 
 import aoc.tp.capteur.Capteur;
+import aoc.tp.capteur.CapteurState;
 
 public class DiffusionAtomique implements AlgoDiffusion {
 
 	Capteur capteur;
 	int nb_sended_update = 0;
-	
 
 	public DiffusionAtomique(Capteur c) {
 		capteur = c;
 	}
 	
 	@Override
-	public void configure() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void configure() {}
 
 	@Override
 	public void execute() {
-		capteur.lock();
+		CapteurState state = capteur.getState();
+		if(state == CapteurState.READ_ATOMIQUE) {
+			while(state == CapteurState.READ_ATOMIQUE) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		capteur.setState(CapteurState.READ_ATOMIQUE);
 		nb_sended_update = capteur.getNbObservers();
 		capteur.notifyObservers();
 	}
@@ -34,7 +41,7 @@ public class DiffusionAtomique implements AlgoDiffusion {
 		}
 		nb_sended_update--;
 		if(nb_sended_update == 0) {
-			capteur.unlock();
+			capteur.setState(CapteurState.WRITE);
 		}
 	}
 
