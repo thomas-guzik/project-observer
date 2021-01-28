@@ -8,4 +8,12 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+  
+  <dependencies>
+<dependency>
+<groupId>org.junit</groupId>
+<artifactId>junit5-engine</artifactId>
+<version>5.0.0-ALPHA</version>
+</dependency>
+  </dependencies>
 </project>

@@ -1,25 +1,28 @@
 package aoc.tp.capteur;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import aoc.tp.algo.AlgoDiffusion;
 import aoc.tp.algo.DiffusionAtomique;
+import aoc.tp.algo.DiffusionIncoherence;
 import aoc.tp.algo.DiffusionSequentielle;
 import aoc.tp.observer.AbstractSubject;
 
 public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	private int v_write = 0;
-	private int v_read = v_write;
-	private boolean locked = false;
-    private boolean blocked = false;
-	private AlgoDiffusion algo = new DiffusionSequentielle(this);
+	private StampedValue v_read = new StampedValue(v_write);
+	private AlgoDiffusion algo = new DiffusionIncoherence(this);
 	private CapteurState state = CapteurState.WRITE;
-
+	
+	List<Integer> traces_read = new ArrayList<>();
+	
 	public CapteurImpl() {
 	}
 
-	public int getValue() {
+	public StampedValue getValue() {
 		algo.valueRead();
 		return v_read;
 	}
@@ -37,27 +40,15 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	public void tick() {
 		algo.execute();
 
-        // wait when in an atomic read
-        Logger.getLogger("Error").info("begin wait");
-        while(getState() == CapteurState.READ_ATOMIQUE) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        Logger.getLogger("Error").info("end wait");
-
-        if (getState() == CapteurState.READ_SEQUENTIAL || getState() == CapteurState.WRITE) {
-            v_write++;
-        }
+        v_write++;
         if (getState() == CapteurState.WRITE) {
-            v_read = v_write;
+        	updateRead();
         }
 	}
 
 	public void setAlgorithm(AlgoDiffusion a) {
 		algo = a;
+		a.setCapteur(this);
 	}
 
 	@Override
@@ -68,8 +59,17 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	@Override
 	public void setState(CapteurState state) {
         if (getState() == CapteurState.WRITE && state == CapteurState.READ_SEQUENTIAL) {
-            v_read = v_write;
+        	updateRead();
         }
 		this.state = state; 
 	}
+	
+	public void updateRead() {
+		v_read = new StampedValue(v_write);
+		traces_read.add(v_write);
+		
+	}
+
 }
+
+

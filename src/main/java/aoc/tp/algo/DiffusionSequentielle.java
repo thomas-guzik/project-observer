@@ -7,47 +7,45 @@ import aoc.tp.capteur.CapteurState;
 
 public class DiffusionSequentielle implements AlgoDiffusion {
 
-    Capteur capteur;
-    int nb_sent_updates = 0;
-   // Set<ObserverDeCapteurAsync> 
+	Capteur capteur;
+	int nb_sent_updates = 0;
 
-    public DiffusionSequentielle(Capteur c) {
-        capteur = c;
-    }
+	public DiffusionSequentielle(Capteur c) {
+		capteur = c;
+	}
+
+	public DiffusionSequentielle() {
+	}
+
+	@Override
+	public void setCapteur(Capteur c) {
+		this.capteur = c;
+	}
 
 	@Override
 	public void configure() {
-		// TODO Auto-generated method stub
-		
 	}
 
-	// 1 - Il dit à capteur de ok pour v_write++ mais pas v_read reste la même
-	// 1 - A chaque fois ? oui
-
-	
 	@Override
 	public void execute() {
-        Logger.getLogger("Error").info("execute(): state is " + capteur.getState());
-        // only notify observers if we are not already in READ_SEQUENTIAL mode
-        if (capteur.getState() == CapteurState.WRITE) {
-            capteur.setState(CapteurState.READ_SEQUENTIAL);
-            nb_sent_updates = capteur.getNbObservers();
-            capteur.notifyObservers();
-        }
+		Logger.getLogger("Error").info("execute(): state is " + capteur.getState());
+		// only notify observers if we are not already in READ_SEQUENTIAL mode
+		if (capteur.getState() == CapteurState.WRITE) {
+			capteur.setState(CapteurState.READ_SEQUENTIAL);
+			nb_sent_updates = capteur.getNbObservers();
+			capteur.notifyObservers();
+		}
 	}
 
-	// 1 - Il faut pas que ce soit le même afficheur
 	@Override
 	public void valueRead() {
-        Logger.getLogger("Error").info("valueRead(): nb_sent_updates = " + nb_sent_updates);
-		if(nb_sent_updates == 0) {
+		Logger.getLogger("Error").info("valueRead(): nb_sent_updates = " + nb_sent_updates);
+		if (nb_sent_updates == 0) {
 			Logger.getLogger("Error").info("Error this case should be impossible");
 		}
 		nb_sent_updates--;
-		if(nb_sent_updates == 0) {
+		if (nb_sent_updates == 0) {
 			capteur.setState(CapteurState.WRITE);
 		}
-		
 	}
-
 }

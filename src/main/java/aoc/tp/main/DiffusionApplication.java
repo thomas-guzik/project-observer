@@ -1,21 +1,36 @@
 package aoc.tp.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
+import aoc.tp.algo.AlgoDiffusion;
+import aoc.tp.algo.DiffusionAtomique;
 import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
+import aoc.tp.capteur.CapteurAsync;
 import aoc.tp.capteur.CapteurImpl;
 import aoc.tp.observer.Observer;
+import aoc.tp.observer.Subject;
 
 public class DiffusionApplication {
 
-	public void run(Capteur capteur, int ticks) {
+	Capteur capteur = new CapteurImpl();
+	private List<Canal> canals = new ArrayList<Canal>();
+	private List<ObserverDeCapteur> afficheurs =  new ArrayList<ObserverDeCapteur>();
+	
+	public Capteur getCapteur() {
+		return capteur;
+	}
+
+	public void run(int ticks) {
 		if(ticks >= 0) {
 			int n_tick = 0;
 			while(n_tick < ticks) {
 				capteur.tick();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -25,7 +40,7 @@ public class DiffusionApplication {
 			while(true) {
 				capteur.tick();
 				try {
-					Thread.sleep(100);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -33,32 +48,25 @@ public class DiffusionApplication {
 		}
 	}
 	
-	public Capteur initialize() {
-		Capteur capteur = new CapteurImpl();
+	public void initialize(AlgoDiffusion algo, int nb_afficheur) {
+		capteur.setAlgorithm(algo);
 		
+		for(int i = 0; i < nb_afficheur; i++) {
+			afficheurs.add(new Afficheur());
+		}
 		
-		
-    	ObserverDeCapteur afficheur1 = new Afficheur();
-    	ObserverDeCapteur afficheur2 = new Afficheur();
-    	ObserverDeCapteur afficheur3 = new Afficheur();
-    	ObserverDeCapteur afficheur4 = new Afficheur();
-    	
-    	Canal c1 = new Canal(capteur, afficheur1);
-    	Canal c2 = new Canal(capteur, afficheur2);
-    	Canal c3 = new Canal(capteur, afficheur3);
-    	Canal c4 = new Canal(capteur, afficheur4);
-    	
-    	capteur.attach((Observer) c1);
-    	capteur.attach((Observer) c2);
-    	capteur.attach((Observer) c3);
-    	capteur.attach((Observer) c4);
-
-    	return capteur;
+		for(int i = 0; i < nb_afficheur; i++) {
+			Canal c = new Canal(capteur, afficheurs.get(i));
+			canals.add(c);
+			capteur.attach((Observer) c);
+		}
 	}
 
     public static void main(String[] args) {
     	DiffusionApplication app = new DiffusionApplication();
-    	app.run(app.initialize(), 5);
+    	app.initialize(new DiffusionAtomique(),4);
+    	app.run(100);
         System.out.println("main(): end");
     }
+    
 }

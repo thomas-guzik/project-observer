@@ -5,6 +5,7 @@ import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.afficheur.ObserverDeCapteurAsync;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
+import aoc.tp.capteur.StampedValue;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,7 +29,7 @@ public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCa
 		scheduler.schedule(() -> { afficheur.update(this); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 
-	public Future<Integer> getValue() {
+	public Future<StampedValue> getValue() {
 		return scheduler.schedule(() -> { return capteur.getValue(); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 	

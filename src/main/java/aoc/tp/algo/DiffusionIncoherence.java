@@ -1,23 +1,34 @@
 package aoc.tp.algo;
 
+import aoc.tp.capteur.Capteur;
+
 public class DiffusionIncoherence implements AlgoDiffusion {
+
+	private Capteur capteur;
+
+	public DiffusionIncoherence(Capteur capteur) {
+		this.capteur = capteur;
+	}
+
+	public DiffusionIncoherence() {
+	}
+
+	@Override
+	public void setCapteur(Capteur c) {
+		this.capteur = c;
+	}
 
 	@Override
 	public void configure() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		capteur.notifyObservers();
 	}
 
 	@Override
 	public void valueRead() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
