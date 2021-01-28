@@ -7,31 +7,33 @@ import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
 
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCapteurAsync {
 
 	private Capteur capteur;
 	private ObserverDeCapteur afficheur;
-	private ExecutorService scheduler;
-	
+	private ScheduledExecutorService scheduler;
+
 	public Canal(Capteur capteur, ObserverDeCapteur afficheur) {
 		this.capteur = capteur;
 		this.afficheur = afficheur;
-		this.scheduler = Executors.newCachedThreadPool();
+		this.scheduler = Executors.newScheduledThreadPool(10);
 	}
 	
 	public void update(Capteur subject) {
-		scheduler.submit(() -> { afficheur.update(this); });
+		scheduler.schedule(() -> { afficheur.update(this); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 
 	public Future<Integer> getValue() {
-		return scheduler.submit(() -> { return capteur.getValue(); });
+		return scheduler.schedule(() -> { return capteur.getValue(); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 	
 	public void tick() {
-		scheduler.submit(() -> { capteur.tick(); });
+		scheduler.schedule(() -> { capteur.tick(); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 
 }

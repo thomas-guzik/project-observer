@@ -32,7 +32,7 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 		// TODO Améliorer cette partie
 		while (!open) {
 			try {
-				Thread.sleep(100);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
