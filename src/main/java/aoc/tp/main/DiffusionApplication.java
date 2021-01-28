@@ -59,5 +59,6 @@ public class DiffusionApplication {
     public static void main(String[] args) {
     	DiffusionApplication app = new DiffusionApplication();
     	app.run(app.initialize(), 5);
+        System.out.println("main(): end");
     }
 }

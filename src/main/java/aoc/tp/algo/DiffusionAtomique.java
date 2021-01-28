@@ -19,16 +19,6 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
 	@Override
 	public void execute() {
-		CapteurState state = capteur.getState();
-		if(state == CapteurState.READ_ATOMIQUE) {
-			while(state == CapteurState.READ_ATOMIQUE) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 		capteur.setState(CapteurState.READ_ATOMIQUE);
 		nb_sended_update = capteur.getNbObservers();
 		capteur.notifyObservers();
@@ -36,6 +26,7 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
 	@Override
 	public void valueRead() {
+        Logger.getLogger("Error").info("valueRead(): nb_sended_update = " + nb_sended_update);
 		if(nb_sended_update == 0) {
 			Logger.getLogger("Error").info("Error this case should be impossible");
 		}

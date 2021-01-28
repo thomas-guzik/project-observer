@@ -13,7 +13,7 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	private int v_read = v_write;
 	private boolean locked = false;
     private boolean blocked = false;
-	private AlgoDiffusion algo = new DiffusionAtomique(this);
+	private AlgoDiffusion algo = new DiffusionSequentielle(this);
 	private CapteurState state = CapteurState.WRITE;
 
 	public CapteurImpl() {
@@ -21,26 +21,11 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	public int getValue() {
 		algo.valueRead();
+		if(state == CapteurState.WRITE) {
+			v_read = v_write;
+		}
 		return v_read;
 	}
-
-	public void lock() {
-		locked = true;
-	}
-
-	public void unlock() {
-		locked = false;
-	}
-
-    public void block() {
-        Logger.getLogger("Error").info("blocked");
-        blocked = true;
-    }
-
-    public void unblock() {
-        Logger.getLogger("Error").info("unblocked");
-        blocked = false;
-    }
 
     // 1 - tick(), state = WRITE
     // 2 - algo.execute(), notify() state = READ_ATOMIQ
@@ -54,14 +39,21 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
     
 	public void tick() {
 		algo.execute();
-		
-		if(state == CapteurState.WRITE) {
-			v_write++;
-			v_read = v_write;
-		}
-		else if(state == CapteurState.READ_ATOMIQUE) {
-			
-		}
+
+        // wait when in an atomic read
+        Logger.getLogger("Error").info("begin wait");
+        while(getState() == CapteurState.READ_ATOMIQUE) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Logger.getLogger("Error").info("end wait");
+
+        if (getState() == CapteurState.READ_SEQUENTIAL || getState() == CapteurState.WRITE) {
+            v_write++;
+        }
 	}
 
 	public void setAlgorithm(AlgoDiffusion a) {
@@ -75,6 +67,9 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	@Override
 	public void setState(CapteurState state) {
+        if (getState() == CapteurState.WRITE && state == CapteurState.READ_SEQUENTIAL) {
+            v_read = v_write;
+        }
 		this.state = state; 
 	}
 }

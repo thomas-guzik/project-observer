@@ -27,9 +27,10 @@ public class DiffusionSequentielle implements AlgoDiffusion {
 	
 	@Override
 	public void execute() {
-		CapteurState state = capteur.getState();
-        if(state == CapteurState.READ_SEQUENTIAL) {
-        	capteur.block();
+        Logger.getLogger("Error").info("execute(): state is " + capteur.getState());
+        // only notify observers if we are not already in READ_SEQUENTIAL mode
+        if (capteur.getState() == CapteurState.WRITE) {
+            capteur.setState(CapteurState.READ_SEQUENTIAL);
             nb_sent_updates = capteur.getNbObservers();
             capteur.notifyObservers();
         }
@@ -38,12 +39,13 @@ public class DiffusionSequentielle implements AlgoDiffusion {
 	// 1 - Il faut pas que ce soit le même afficheur
 	@Override
 	public void valueRead() {
+        Logger.getLogger("Error").info("valueRead(): nb_sent_updates = " + nb_sent_updates);
 		if(nb_sent_updates == 0) {
 			Logger.getLogger("Error").info("Error this case should be impossible");
 		}
 		nb_sent_updates--;
 		if(nb_sent_updates == 0) {
-			capteur.unblock();
+			capteur.setState(CapteurState.WRITE);
 		}
 		
 	}
