@@ -21,9 +21,6 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	public int getValue() {
 		algo.valueRead();
-		if(state == CapteurState.WRITE) {
-			v_read = v_write;
-		}
 		return v_read;
 	}
 
@@ -53,6 +50,9 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
         if (getState() == CapteurState.READ_SEQUENTIAL || getState() == CapteurState.WRITE) {
             v_write++;
+        }
+        if (getState() == CapteurState.WRITE) {
+            v_read = v_write;
         }
 	}
 
