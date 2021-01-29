@@ -17,7 +17,7 @@ public class BaseConfiguration implements Configuration {
 			afficheurs[i] = new Afficheur();
 		}
 		for(int i = 0; i < canals.length; i++) {
-			canals[i] = new Canal(capteur, afficheurs[i]);
+		//	canals[i] = new Canal(capteur, afficheurs[i]);
 //			capteur.attach(canals[i]);
 		}
 	}

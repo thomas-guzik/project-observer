@@ -7,7 +7,6 @@ import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
 import aoc.tp.capteur.StampedValue;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,10 +18,10 @@ public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCa
 	private ObserverDeCapteur afficheur;
 	private ScheduledExecutorService scheduler;
 
-	public Canal(Capteur capteur, ObserverDeCapteur afficheur) {
+	public Canal(Capteur capteur, ObserverDeCapteur afficheur, ScheduledExecutorService schedulor) {
 		this.capteur = capteur;
 		this.afficheur = afficheur;
-		this.scheduler = Executors.newScheduledThreadPool(10);
+		this.scheduler = schedulor;
 	}
 	
 	public void update(Capteur subject) {

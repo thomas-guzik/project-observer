@@ -2,6 +2,9 @@ package aoc.tp.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Logger;
 
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
@@ -20,6 +23,8 @@ public class DiffusionApplication {
 	private List<Canal> canals = new ArrayList<Canal>();
 	private List<ObserverDeCapteur> afficheurs =  new ArrayList<ObserverDeCapteur>();
 	
+	ScheduledExecutorService scheduler =  Executors.newScheduledThreadPool(50);
+	
 	public Capteur getCapteur() {
 		return capteur;
 	}
@@ -29,6 +34,7 @@ public class DiffusionApplication {
 			int n_tick = 0;
 			while(n_tick < ticks) {
 				capteur.tick();
+				Logger.getGlobal().info("************************************* TICK");
 				try {
 					Thread.sleep(5);
 				} catch (InterruptedException e) {
@@ -56,7 +62,7 @@ public class DiffusionApplication {
 		}
 		
 		for(int i = 0; i < nb_afficheur; i++) {
-			Canal c = new Canal(capteur, afficheurs.get(i));
+			Canal c = new Canal(capteur, afficheurs.get(i), scheduler);
 			canals.add(c);
 			capteur.attach((Observer) c);
 		}
@@ -65,7 +71,7 @@ public class DiffusionApplication {
     public static void main(String[] args) {
     	DiffusionApplication app = new DiffusionApplication();
     	app.initialize(new DiffusionAtomique(),4);
-    	app.run(100);
+    	app.run(5);
         System.out.println("main(): end");
     }
     
