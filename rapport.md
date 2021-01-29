@@ -21,7 +21,7 @@ Sur votre terminal :
 mvn test
 ```
 
-# Développment d'équipe
+# Développement d'équipe
 
 Nous avons travaillé la majorité du temps en utilisant Visual Studio Live Share ou en partage d'écran, les commits ne représentent donc pas forcément la répartition de la charge de travail.
 
@@ -30,13 +30,13 @@ Nous avons travaillé la majorité du temps en utilisant Visual Studio Live Shar
 Nous allons donner dans un premier temps un aperçu général du code. Nous avons :
 - DiffusionApplication, qui initialise le capteur, les canaux, et les afficheurs.
 - chaque Canal sera un observer de Capteur
-- lors d'un tick, le capteur notifiera via un update tous ses observers, càd ces canaux. Les canaux enverront cette update vers leurs afficheurs en utilisant une lambda expression lancé depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
-- une fois l'udpate reçu chez l'Afficheur, l'Afficheur lançera l'opération getValue() vers le Canal d'origine, le Canal lançera un getValue() en utilisant une lambda expression depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
+- lors d'un tick, le capteur notifiera via un update tous ses observers, càd ces canaux. Les canaux enverront cette update vers leurs afficheurs en utilisant une lambda expression lancée depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
+- une fois l'udpate reçu chez l'Afficheur, l'Afficheur lançera l'opération getValue() vers le Canal d'origine, le Canal lancera un getValue() en utilisant une lambda expression depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
 
 
 # Patron de conception
 
-Les premiers diagrammes que vous pouvez voir représentent comment nous avons pensé l'application dans un premier temps.  Certaines modification ont été faîtes, mais cela est expliqué dans le rapport.
+Les premiers diagrammes que vous pouvez voir représentent comment nous avons pensé l'application dans un premier temps.  Certaines modification ont été faites, mais cela est expliqué dans le rapport.
 
 ## Patron Proxy
 
@@ -56,7 +56,7 @@ On implémente le patron Observer pour l'Afficheur, le sujet étant le Capteur.
 
 ![](./img/Observer.png)
 
-## Patron Strategie
+## Patron Strategy
 
 Le patron Stratégie est utilisé pour séparer les différents algorithmes de diffusion.
 
@@ -68,17 +68,17 @@ Le patron Stratégie est utilisé pour séparer les différents algorithmes de d
 
 ![](./img/active_intro.png)
 
-En essayant de programmer la fonction update, il fallait concillier ces deux bouts de code
+En essayant de programmer la fonction update, il fallait concilier ces deux bouts de code
 
 ```java
-// Quand on se place coté update, on imagine ce code ..
+// Quand on se place côté update, on imagine ce code ..
 class Afficheur {
   void udpate(Capteur c) {
       //...
   }
 }
 
-// Quand on se place coté getValue, on imagine ce code ..
+// Quand on se place côté getValue, on imagine ce code ..
 class Afficheur {
 // quelque part dans une fonction..
   Future<StampedValue> v = capteurAsync.getValue();
@@ -91,9 +91,9 @@ class Afficheur {
   }
 }
 
-// La fonction update et prend à présent un capteurAsync, on rajoutera donc une méthode à ObserserdeCapteur
+// La fonction update prend à présent un CapteurAsync, on rajoutera donc cette méthode à ObserverDeCapteur
 
-// Egalemenent, il faudra aussi penser que l'implémentation de CapteurAsync sera un Canal et non le Capteur
+// Égalemenent, il faudra aussi penser que l'implémentation de CapteurAsync sera un Canal et non le Capteur
 // On en conclut donc que Canal fera update(this)
 ```
 
@@ -106,7 +106,7 @@ On en conclu donc cette image :
 
 ## Introduction
 
-Afin que chaque tick soit executé périodiquement, nous lançons nos ticks à l'aide de SchedulorExecutorService :
+Afin que chaque tick soit exécuté périodiquement, nous lançons nos ticks à l'aide de ScheduledExecutorService :
 
 ```java
 for (int i = 0; i < ticks; i++) {
@@ -121,9 +121,9 @@ private void sendTick() {
 }
 ```
 
-Ici, nous lançerons un tick toutes les 75 millisecondes.
+Ici, nous lancerons un tick toutes les 75 millisecondes.
 
-Le counter du Capteur aura 2 variables :
+Le compteur du Capteur aura 2 variables :
 - v_write qui représente la variable d'écriture
 - v_read qui sera la valeur renvoyé lors d'un getValue() 
 
@@ -140,7 +140,7 @@ public enum CapteurState {
 ## Cohérence atomique
 
 La cohérence atomique consiste à interdire l'écriture lors des phases de lecture.
-Pour cela, on verouille donc le capteur avant de notifier les observeurs, puis on compte chaque lecture, quand ils ont tous lu la valeur, on repasse en mode écriture. Si on essaie d'écrire depuis un thread, celui-ci attendra jusqu'au passage en mode écriture.
+Pour cela, on verrouille donc le capteur avant de notifier les observeurs, puis on compte chaque lecture, quand ils ont tous lu la valeur, on repasse en mode écriture. Si on essaie d'écrire depuis un thread, celui-ci attendra jusqu'au passage en mode écriture.
 
 `CapteurImpl.java`
 ```java
@@ -246,7 +246,7 @@ public void valueRead() {
 
 La cohérence séquentielle permet d'écrire même en phase de lecture, cependant la valeur lue reste la même et les observeurs ne sont pas notifiés de ces écritures qui sont donc perdues. Lorsque la phase de lecture se termine, la nouvelle valeur est disponible et la prochaine écriture se déroule normalement.
 
-Lors des tests, on peut voir que les lecteurs manquent une partie des valeurs, mais les valeurs lues sont cohérentes (elles se suivent). Le programme s'exécute plus vite qu'en cohérence atomique, puisque les capteurs peuvent continuer à écrire pendant l'affichage (50 ticks prennent environ 6 secondes à s'éxécuter). C'est bien le fonctionnement attendu.
+Lors des tests, on peut voir que les lecteurs manquent une partie des valeurs, mais les valeurs lues sont cohérentes (elles se suivent). Le programme s'exécute plus vite qu'en cohérence atomique, puisque les capteurs peuvent continuer à écrire pendant l'affichage (50 ticks prennent environ 6 secondes à s'exécuter). C'est bien le fonctionnement attendu.
 
 ## Incohérence
 
@@ -289,9 +289,9 @@ public void update(CapteurAsync canal) {
 
 ```
 
-Pour l'incohérence nous avons implémenté une classe StampedValue, qui contient la valeur (int) et une estampille temporelle (long) obtenue lors de l'écriture. On vérifie dans afficheur que les valeurs obtenues se suivent bien dans le temps, et on ignore les valeurs plus vieilles que celle précédemment lue.
+Pour l'incohérence nous avons implémenté une classe StampedValue, qui contient la valeur (int) et une estampille temporelle (long) obtenue lors de l'écriture. On vérifie dans un afficheur que les valeurs obtenues se suivent bien dans le temps, et on ignore les valeurs plus vieilles que celles précédemment lues.
 
-Pour les tests, on affiche INCOHERENCE dans la console lorsqu'une valeur ancienne est lue après une valeur nouvelle. Les résultats montrent un certain nombre d'incohérences, mais vu qu'on les ignore, ce n'est pas un problème. Le temps d'exécution est semblable à celui en cohérence séquencielle (environ 6 secondes pour 50 ticks). En conclusion, cette implémentation semble correspondre aux attentes.
+Pour les tests, on affiche `INCOHERENCE` dans la console lorsqu'une valeur ancienne est lue après une valeur nouvelle. Les résultats montrent un certain nombre d'incohérences, mais vu qu'on les ignore, ce n'est pas un problème. Le temps d'exécution est semblable à celui en cohérence séquentielle (environ 6 secondes pour 50 ticks). En conclusion, cette implémentation semble correspondre aux attentes.
 
 # Implémentation d'Active Object
 
@@ -300,12 +300,9 @@ Les code ci dessous à été simplifié pour améliorer la compréhension
 
 ```java
 
-// Initialisation des composants :
+// 1 - Initialisation des composants :
 
 public class DiffusionApplication {
-
-
-
 
 	public void initialize(AlgoDiffusion algo, int nb_afficheur) {
 		capteur.setAlgorithm(algo);
@@ -323,6 +320,7 @@ public class DiffusionApplication {
 		}
 	}
 
+// 2 - On tick
 	public void run(int ticks) {
 		if (ticks >= 0) {
 			for (int i = 0; i < ticks; i++) {
@@ -354,12 +352,68 @@ public class DiffusionApplication {
 	}
 }
 
-// Reception du tick :
+// 3 - Reception du tick :
 
 public class CapteurImpl extends AbstractSubject implements Capteur {
 	public void tick() {
         // Voir partir supérieur
         algo.execute();
+	}
+}
+
+// 4 - Quelque soit la diffusion
+public class DiffusionAtomique implements AlgoDiffusion {
+
+	int nb_sended_update = 0;
+
+    // 5 - On notifie tous les observers
+	public void execute() {
+		// ..
+		nb_sended_update = capteur.getNbObservers();
+		capteur.notifyObservers();
+	}
+
+    // 10 (FIN) - On indique qu'on a reçu le getValue() et si besoin on rechange l'état du capteur
+	public void valueRead() {
+		nb_sended_update--;
+		if (nb_sended_update == 0) {
+			capteur.setState(CapteurState.WRITE);
+		}
+	}
+}
+
+// 6 - Les observers sont les canaux
+
+public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCapteurAsync {
+
+	public Canal(Capteur capteur, ObserverDeCapteur afficheur, ScheduledExecutorService scheduler) {
+		this.capteur = capteur;
+		this.afficheur = afficheur;
+		this.scheduler = scheduler;
+	}
+
+    // 7 - On envoie l'update à l'afficheur avec un délai
+	public void update(Capteur subject) {
+		scheduler.schedule(() -> {
+			afficheur.update(this);
+		}, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
+	}
+
+    // 9 - Le getValue de l'Afficheur est transmis au capteur
+	public Future<StampedValue> getValue() {
+		return scheduler.schedule(() -> {
+			return capteur.getValue();
+		}, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
+	}
+}
+
+public class Afficheur implements ObserverDeCapteur {
+
+    // 8 - L'afficheur fait un getValue() et attend son retour
+	public void update(CapteurAsync canal) {
+		Future<StampedValue> f = canal.getValue();
+		StampedValue v = f.get();
+		Logger.getGlobal().info(v);
 	}
 }
 
@@ -380,7 +434,7 @@ Ils sont basés sur le fait que la valeur du capteur commence à 0 et est incr�
 
 De plus, dans chaque test, on s'assure que la dernière valeur lue n'est pas supérieure au nombre de ticks.
 
-Tous les tests sont passés avec succès.
+Tous les tests sont passés avec succès. 
 
 ![](./img/junit_test.png)
 

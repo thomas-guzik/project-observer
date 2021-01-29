@@ -36,7 +36,12 @@ public class DiffusionSequentielle implements AlgoDiffusion {
 	@Override
 	public void valueRead() {
 		if (nb_sent_updates == 0) {
-			Logger.getLogger("Error").info("Error this case should be impossible");
+			try {				
+				throw new Exception("Get an unexpected ValueRead");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		nb_sent_updates--;
 		if (nb_sent_updates == 0) {
