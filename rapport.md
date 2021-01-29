@@ -419,6 +419,10 @@ public class Afficheur implements ObserverDeCapteur {
 
 ```
 
+Diagramme de séquence d'ActiveObject avec DiffusionAtomique
+
+![](./img/puml.png)
+
 # Résultat des tests
 
 Nous avons écrit différents tests JUnit.

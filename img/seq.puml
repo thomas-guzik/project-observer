@@ -1,17 +1,45 @@
 @startuml seq
+
+participant "c:CapteurImpl"
+participant "a:DiffusionAtomique"
+participant "c1:Canal"
+participant "a1:Afficheur"
+activate ":ScheduledExecutor\nService"
+
 [-> "c:CapteurImpl" ++ : tick() 
 
 "c:CapteurImpl" -> "a:DiffusionAtomique" : execute()
 deactivate "c:CapteurImpl"
 activate "a:DiffusionAtomique"
 
+"a:DiffusionAtomique" -> "c:CapteurImpl" : setState(CapteurState.READ_ATOMIQUE)
+"a:DiffusionAtomique" -> "c:CapteurImpl" : getNbObservers()
+"a:DiffusionAtomique" -> "c:CapteurImpl" : notifyObservers();
 
+deactivate "a:DiffusionAtomique"
+activate "c:CapteurImpl"
+"c:CapteurImpl" -> "c1:Canal" : update(a)
+deactivate "c:CapteurImpl"
+activate "c1:Canal"
+"c1:Canal" -> "update(c1)" ** : create
+"c1:Canal" -> ":ScheduledExecutor\nService" : schedule(udpate, random)
 
-bob -> bob ++ : self call
-bob -> bib ++  #005500 : hello
-bob -> george ** : create
-return done
-return rc
-bob -> george !! : delete
-return success
+[-> "c:CapteurImpl" ++ : tick() 
+"c:CapteurImpl" -> "c:CapteurImpl" : wait until write is free
+deactivate "c:CapteurImpl"
+
+activate ":ScheduledExecutor\nService"
+":ScheduledExecutor\nService" -> "Future" ** : create
+":ScheduledExecutor\nService" -> "c1:Canal" : return Future
+":ScheduledExecutor\nService" -> "a1:Afficheur" ++ : update(c1)
+deactivate ":ScheduledExecutor\nService"
+"a1:Afficheur" -> "c1:Canal" : getValue()
+"c1:Canal" -> "getValue" ** : create
+"c1:Canal" -> ":ScheduledExecutor\nService" ++ : schedule(getValue, random)
+":ScheduledExecutor\nService" -> "c:CapteurImpl" ++ : getValue()
+"c:CapteurImpl" -> "a:DiffusionAtomique" : valueRead
+activate "a:DiffusionAtomique"
+"a:DiffusionAtomique" -> "c:CapteurImpl" : setState(CapteurState.READ_ATOMIQUE)
+"c:CapteurImpl" -> "c:CapteurImpl" : we continue with the next tick ...
+
 @enduml
