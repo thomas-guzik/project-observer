@@ -28,13 +28,9 @@ public class DiffusionSequentielle implements AlgoDiffusion {
 
 	@Override
 	public void execute() {
-		Logger.getLogger("Error").info("execute(): state is " + capteur.getState());
-		// only notify observers if we are not already in READ_SEQUENTIAL mode
-		if (capteur.getState() == CapteurState.WRITE) {
 			capteur.setState(CapteurState.READ_SEQUENTIAL);
 			nb_sent_updates = capteur.getNbObservers();
 			capteur.notifyObservers();
-		}
 	}
 
 	@Override

@@ -9,6 +9,7 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
 	Capteur capteur;
 	int nb_sended_update = 0;
+	int await_ticks = 0;
 
 	public DiffusionAtomique(Capteur c) {
 		capteur = c;
@@ -31,16 +32,6 @@ public class DiffusionAtomique implements AlgoDiffusion {
 		capteur.setState(CapteurState.READ_ATOMIQUE);
 		nb_sended_update = capteur.getNbObservers();
 		capteur.notifyObservers();
-
-		Logger.getLogger("Error").info("begin wait");
-		while (capteur.getState() == CapteurState.READ_ATOMIQUE) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		Logger.getLogger("Error").info("end wait");
 	}
 
 	@Override

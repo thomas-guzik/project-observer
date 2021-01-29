@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.algo.AlgoDiffusion;
 import aoc.tp.algo.DiffusionAtomique;
+import aoc.tp.algo.DiffusionSequentielle;
 import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurAsync;
@@ -33,10 +35,11 @@ public class DiffusionApplication {
 		if(ticks >= 0) {
 			int n_tick = 0;
 			while(n_tick < ticks) {
-				capteur.tick();
+				scheduler.execute( () -> {capteur.tick();});
+//				capteur.tick();
 				Logger.getGlobal().info("************************************* TICK");
 				try {
-					Thread.sleep(5);
+					Thread.sleep(25);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -70,8 +73,8 @@ public class DiffusionApplication {
 
     public static void main(String[] args) {
     	DiffusionApplication app = new DiffusionApplication();
-    	app.initialize(new DiffusionAtomique(),4);
-    	app.run(5);
+    	app.initialize(new DiffusionSequentielle(),4);
+    	app.run(50);
         System.out.println("main(): end");
     }
     

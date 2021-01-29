@@ -2,6 +2,9 @@ package aoc.tp.capteur;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import aoc.tp.algo.AlgoDiffusion;
@@ -18,6 +21,11 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	private CapteurState state = CapteurState.WRITE;
 	
 	List<Integer> traces_read = new ArrayList<>();
+	
+	Lock lock = new ReentrantLock();
+	Condition waitWrite = lock.newCondition();
+	
+	int waitTicks = 0;
 	
 	public CapteurImpl() {
 	}
@@ -38,12 +46,26 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
     // 9 - v++
     
 	public void tick() {
-		algo.execute();
-
-        v_write++;
-        if (getState() == CapteurState.WRITE) {
-        	updateRead();
-        }
+		waitTicks++;
+		
+		while(waitTicks != 0) {
+			if(state == CapteurState.WRITE) {
+				v_write++;
+				updateRead();
+				waitTicks--;
+				algo.execute();
+			} else if(state == CapteurState.READ_SEQUENTIAL) {
+				v_write++;
+				waitTicks--;
+			}
+			else if(state == CapteurState.READ_ATOMIQUE) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public void setAlgorithm(AlgoDiffusion a) {
@@ -58,9 +80,6 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	@Override
 	public void setState(CapteurState state) {
-        if (getState() == CapteurState.WRITE && state == CapteurState.READ_SEQUENTIAL) {
-        	updateRead();
-        }
 		this.state = state; 
 	}
 	
