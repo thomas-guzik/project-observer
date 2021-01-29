@@ -36,7 +36,12 @@ public class DiffusionAtomique implements AlgoDiffusion {
 	@Override
 	public void valueRead() {
 		if (nb_sended_update == 0) {
-			Logger.getLogger("Error").info("Error this case should be impossible");
+			try {				
+				throw new Exception("Get an unexpected ValueRead");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		nb_sended_update--;
 		if (nb_sended_update == 0) {
