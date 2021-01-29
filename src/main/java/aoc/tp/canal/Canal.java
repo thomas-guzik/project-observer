@@ -18,22 +18,27 @@ public class Canal extends AbstractSubject implements CapteurAsync, ObserverDeCa
 	private ObserverDeCapteur afficheur;
 	private ScheduledExecutorService scheduler;
 
-	public Canal(Capteur capteur, ObserverDeCapteur afficheur, ScheduledExecutorService schedulor) {
+	public Canal(Capteur capteur, ObserverDeCapteur afficheur, ScheduledExecutorService scheduler) {
 		this.capteur = capteur;
 		this.afficheur = afficheur;
-		this.scheduler = schedulor;
+		this.scheduler = scheduler;
 	}
-	
+
+	@Override
 	public void update(Capteur subject) {
-		scheduler.schedule(() -> { afficheur.update(this); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
+		scheduler.schedule(() -> {
+			afficheur.update(this);
+		}, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 
+	@Override
 	public Future<StampedValue> getValue() {
-		return scheduler.schedule(() -> { return capteur.getValue(); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
-	}
-	
-	public void tick() {
-		scheduler.schedule(() -> { capteur.tick(); }, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
+		return scheduler.schedule(() -> {
+			return capteur.getValue();
+		}, ThreadLocalRandom.current().nextInt(0, 100), TimeUnit.MILLISECONDS);
 	}
 
+	@Override
+	public void tick() {
+	}
 }

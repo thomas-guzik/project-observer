@@ -9,7 +9,6 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
 	Capteur capteur;
 	int nb_sended_update = 0;
-	int await_ticks = 0;
 
 	public DiffusionAtomique(Capteur c) {
 		capteur = c;
@@ -36,7 +35,6 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
 	@Override
 	public void valueRead() {
-		Logger.getLogger("Error").info("valueRead(): nb_sended_update = " + nb_sended_update);
 		if (nb_sended_update == 0) {
 			Logger.getLogger("Error").info("Error this case should be impossible");
 		}

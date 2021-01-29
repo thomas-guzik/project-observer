@@ -9,8 +9,8 @@ import aoc.tp.observer.Observer;
 public interface ObserverDeCapteur extends Observer<Capteur> {
 
 	public void update(Capteur subject);
-	
+
 	public void update(CapteurAsync canal);
-	
+
 	public List<Integer> getTraces();
 }
