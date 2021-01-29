@@ -5,6 +5,8 @@
 deactivate "c:CapteurImpl"
 activate "a:DiffusionAtomique"
 
+
+
 bob -> bob ++ : self call
 bob -> bib ++  #005500 : hello
 bob -> george ** : create
