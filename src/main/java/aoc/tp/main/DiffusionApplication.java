@@ -20,7 +20,7 @@ public class DiffusionApplication {
 	Capteur capteur = new CapteurImpl();
 	private List<Canal> canals = new ArrayList<Canal>();
 	private List<ObserverDeCapteur> afficheurs = new ArrayList<ObserverDeCapteur>();
-	ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(50);
+	ScheduledExecutorService scheduler;
 
 	public Capteur getCapteur() {
 		return capteur;
@@ -74,6 +74,7 @@ public class DiffusionApplication {
 		DiffusionApplication app = new DiffusionApplication();
 		app.initialize(new DiffusionSequentielle(), 4);
 		app.run(50);
+        app.scheduler.shutdown();
 	}
 
 }
