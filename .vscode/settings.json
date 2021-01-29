@@ -1,3 +1,7 @@
 {
-    "cSpell.enabled": false
+    "cSpell.enabled": false,
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off"
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "off"
 }
