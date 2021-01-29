@@ -19,14 +19,14 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 	private StampedValue v_read = new StampedValue(v_write);
 	private AlgoDiffusion algo = new DiffusionIncoherence(this);
 	private CapteurState state = CapteurState.WRITE;
-	
+
 	List<Integer> traces_read = new ArrayList<>();
-	
+
 	Lock lock = new ReentrantLock();
 	Condition waitWrite = lock.newCondition();
-	
+
 	int waitTicks = 0;
-	
+
 	public CapteurImpl() {
 	}
 
@@ -35,34 +35,37 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 		return v_read;
 	}
 
-    // 1 - tick(), state = WRITE
-    // 2 - algo.execute(), notify() state = READ_ATOMIQ
-    // 3 - tick(), state = READ_ATOMIQ
-    // 4 - algo.execute(), block()
-    // 5 - state = WRITE
-    // 6 - v++
-    // 7 - notify(), state = READ_ATOMIQ
-    // 8 - state = WRITE
-    // 9 - v++
-    
+	// 1 - tick(), state = WRITE
+	// 2 - algo.execute(), notify() state = READ_ATOMIQ
+	// 3 - tick(), state = READ_ATOMIQ
+	// 4 - algo.execute(), block()
+	// 5 - state = WRITE
+	// 6 - v++
+	// 7 - notify(), state = READ_ATOMIQ
+	// 8 - state = WRITE
+	// 9 - v++
+
 	public void tick() {
-		waitTicks++;
-		
-		while(waitTicks != 0) {
-			if(state == CapteurState.WRITE) {
-				v_write++;
-				updateRead();
-				waitTicks--;
-				algo.execute();
-			} else if(state == CapteurState.READ_SEQUENTIAL) {
-				v_write++;
-				waitTicks--;
-			}
-			else if(state == CapteurState.READ_ATOMIQUE) {
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+
+		if (state == CapteurState.READ_SEQUENTIAL) {
+			v_write++;
+		} else {
+			boolean waiting = true;
+			while (waiting) {
+				lock.lock();
+				if (state == CapteurState.WRITE) {
+					v_write++;
+					updateRead();
+					waiting = false;
+					algo.execute();
+				}				
+				lock.unlock();
+				if (state == CapteurState.READ_ATOMIQUE) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -80,15 +83,13 @@ public class CapteurImpl extends AbstractSubject implements Capteur {
 
 	@Override
 	public void setState(CapteurState state) {
-		this.state = state; 
+		this.state = state;
 	}
-	
+
 	public void updateRead() {
 		v_read = new StampedValue(v_write);
 		traces_read.add(v_write);
-		
+
 	}
 
 }
-
-

@@ -15,6 +15,10 @@ public class Afficheur implements ObserverDeCapteur {
 	List<Integer> traces = new ArrayList<>();
 	long last_timestamp = 0;
 	
+	public List<Integer> getTraces() {
+		return traces;
+	}
+
 	public void update(Capteur subject) {
 		Integer v = subject.getValue().getValue();
 		Logger.getGlobal().info(String.valueOf(v));
