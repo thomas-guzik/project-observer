@@ -9,7 +9,9 @@ import java.util.logging.Logger;
 import aoc.tp.afficheur.Afficheur;
 import aoc.tp.afficheur.ObserverDeCapteur;
 import aoc.tp.algo.AlgoDiffusion;
+import aoc.tp.algo.DiffusionAtomique;
 import aoc.tp.algo.DiffusionSequentielle;
+import aoc.tp.algo.DiffusionIncoherence;
 import aoc.tp.canal.Canal;
 import aoc.tp.capteur.Capteur;
 import aoc.tp.capteur.CapteurImpl;
@@ -56,6 +58,12 @@ public class DiffusionApplication {
 				sendTick();
 			}
 		}
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        scheduler.shutdown();
 	}
 
 	private void sendTick() {
@@ -74,7 +82,6 @@ public class DiffusionApplication {
 		DiffusionApplication app = new DiffusionApplication();
 		app.initialize(new DiffusionSequentielle(), 4);
 		app.run(50);
-        app.scheduler.shutdown();
 	}
 
 }
