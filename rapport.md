@@ -30,8 +30,8 @@ Nous avons travaillé la majorité du temps en utilisant Visual Studio Live Shar
 Nous allons donner dans un premier temps un aperçu général du code. Nous avons :
 - DiffusionApplication, qui initialise le capteur, les canaux, et les afficheurs.
 - chaque Canal sera un observer de Capteur
-- lors d'un tick, le capteur notifiera via un update tous ses observers, càd ces canaux. Les canaux enverront cette update vers leurs afficheurs en utilisant une lambda expression lancée depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
-- une fois l'udpate reçu chez l'Afficheur, l'Afficheur lançera l'opération getValue() vers le Canal d'origine, le Canal lancera un getValue() en utilisant une lambda expression depuis un SchedulorExecutorService avec un délai entre 0 et 100 millisecondes.
+- lors d'un tick, le capteur notifiera via un update tous ses observers, càd ces canaux. Les canaux enverront cette update vers leurs afficheurs en utilisant une lambda expression lancée depuis un ScheduledExecutorService avec un délai entre 0 et 100 millisecondes.
+- une fois l'update reçue chez l'Afficheur, l'Afficheur lancera l'opération getValue() vers le Canal d'origine, le Canal lancera un getValue() en utilisant une lambda expression depuis un ScheduledExecutorService avec un délai entre 0 et 100 millisecondes.
 
 
 # Patron de conception
@@ -73,7 +73,7 @@ En essayant de programmer la fonction update, il fallait concilier ces deux bout
 ```java
 // Quand on se place côté update, on imagine ce code ..
 class Afficheur {
-  void udpate(Capteur c) {
+  void update(Capteur c) {
       //...
   }
 }
@@ -86,7 +86,7 @@ class Afficheur {
 
 // On en conclut :
 class Afficheur {
-  void udpate(CapteurAsync c) {
+  void update(CapteurAsync c) {
       Future<StampedValue> v = capteurAsync.getValue();
   }
 }
@@ -352,11 +352,11 @@ public class DiffusionApplication {
 	}
 }
 
-// 3 - Reception du tick :
+// 3 - Réception du tick :
 
 public class CapteurImpl extends AbstractSubject implements Capteur {
 	public void tick() {
-        // Voir partir supérieur
+        // Voir partie supérieure
         algo.execute();
 	}
 }
@@ -368,7 +368,7 @@ public class DiffusionAtomique implements AlgoDiffusion {
 
     // 5 - On notifie tous les observers
 	public void execute() {
-		// ..
+		// .. code de execute ..
 		nb_sended_update = capteur.getNbObservers();
 		capteur.notifyObservers();
 	}
@@ -416,8 +416,6 @@ public class Afficheur implements ObserverDeCapteur {
 		Logger.getGlobal().info(v);
 	}
 }
-
-
 
 ```
 
